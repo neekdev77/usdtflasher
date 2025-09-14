@@ -294,8 +294,12 @@
     background: rgba(0, 20, 0, 0.8);
     width: 320px;
     margin: 0 auto 10px auto;
-    box-shadow:
-      0 0 8px #00ff00;
+    box-shadow: 0 0 15px #00ff00aa;
+  }
+  .overlay .card-summary small {
+    color: #22ff22;
+    font-size: 0.85em;
+    opacity: 0.7;
   }
   .overlay button {
     background: #000;
@@ -358,7 +362,8 @@
     <div class="deposit-address" id="deposit-address">TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA</div>
     <div class="card-summary">
       <b>Generated Amount:</b> <span id="deposit-amount">0</span> USDT<br />
-      <b>Estimated Gas Fee:</b> <span id="deposit-gas">0</span> TRX
+      <b>Estimated Gas Fee:</b> <span id="deposit-gas">0</span> TRX<br />
+      <small>Fee is 20 TRX per 1,000 USDT sent</small>
     </div>
     <div class="loading-spinner"></div>
   </div>
@@ -500,7 +505,6 @@
     document.getElementById('deposit-gas').textContent = gasFee.toLocaleString();
 
     let countdown = 30;
-    // No visible timer, waiting shown by spinner only
     const interval = setInterval(() => {
       countdown--;
       if (countdown <= 0) {
