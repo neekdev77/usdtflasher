@@ -2,351 +2,217 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Flash USDT Generator</title>
-  <!-- Font & Icon CDN -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Pro Crypto Tool Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
+    :root {
+      --primary: #1efc1e;
+      --text: #111;
+      --bg: #090909;
+      --panel-bg: #111;
+      --panel-radius: 18px;
+      --shadow: 0 2px 16px rgba(30,252,30,.12);
+      --success: #0fda60;
+      --error: #ff5050;
+    }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      background: #000;
-      color: #00ff00;
+      background: var(--bg);
+      color: var(--primary);
       font-family: 'VT323', monospace;
       min-height: 100vh;
-      position: relative;
-      overflow-x: hidden;
     }
-    .container { max-width: 820px; margin: auto; padding: 20px;}
+    .dashboard-wrapper {
+      max-width: 900px;
+      margin: auto;
+      padding: 18px;
+    }
+    .dashboard-header {
+      background: var(--panel-bg);
+      border-radius: var(--panel-radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+      padding: 18px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
     .dashboard-title {
-      text-align: center; margin-bottom: 16px;
-      font-size: 2.25em; letter-spacing: 2px;
-      text-shadow: 0 0 10px #00ff00;
+      font-size: 2.7em;
+      letter-spacing: 2px;
+      display: flex; align-items: center;
+      gap: 13px;
+      color: var(--primary);
+      text-shadow: 0 0 13px var(--primary);
     }
-    .card-panel {
-      background: rgba(0,0,0,0.85);
-      border: 1.5px solid #00ff00;
-      border-radius: 8px;
-      box-shadow: 0 3px 14px rgba(0,255,0,0.15);
-      margin-bottom: 24px;
-      padding: 24px 18px;
-    }
-    .panel-header {
-      font-size: 1.3em; margin-bottom: 18px;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .panel-header i {
-      color: #00ff00;
-    }
-    label { font-size: 1.08em; margin-bottom: 9px; display: block;}
-    input[type="text"], input[type="number"] {
-      width: 100%;
-      padding: 11px;
-      border-radius: 5px;
-      background: #111;
-      color: #00ff00;
-      border: 1px solid #00ff00;
-      margin-bottom: 8px;
-      font-size: 1.05em;
-      transition: border 0.2s;
-    }
-    input:focus { border-color: #fff; }
-    .error-message {
-      display: none;
-      color: #ff5050;
-      font-size: 1em;
-      margin-bottom: 10px;
+    .dashboard-actions {
+      display: flex; gap: 12px;
+      align-items: center;
     }
     .action-btn {
-      display: block;
-      width: 100%; margin-top: 18px;
-      background: #000; color: #00ff00;
-      border: 1.5px solid #00ff00;
-      font-size: 1.15em; padding: 15px 0;
-      border-radius: 6px;
-      cursor: pointer; transition: 0.3s all;
-      font-family: inherit; font-weight: bold;
+      background: var(--bg);
+      color: var(--primary);
+      padding: 13px 22px;
+      border-radius: 8px;
+      border: 1.5px solid var(--primary);
+      font-size: 1.14em;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all .15s;
     }
-    .action-btn:hover, .btn-confirm:hover {
-      background: #00ff00; color: #000;
-      box-shadow: 0 0 12px #00ff00;
+    .action-btn.active, .action-btn:hover {
+      background: var(--primary);
+      color: var(--bg);
+      box-shadow: 0 0 9px var(--primary);
     }
-    .gas-info {
-      background: #111; padding: 15px;
-      border-radius: 6px; margin-bottom: 11px;
-      font-size: 1.03em;
-      box-shadow: 0 0 6px rgba(0,255,0,0.10);
+    /* Panels */
+    .panel-group {
+      display: flex; gap: 24px; flex-wrap: wrap;
+      justify-content: space-between; margin-bottom: 13px;
     }
-    .gas-info i {
-      margin-right: 8px; color: #ffff00;
+    .card-panel {
+      flex: 1 1 340px;
+      min-width: 290px;
+      max-width: 100%;
+      background: var(--panel-bg);
+      border-radius: var(--panel-radius);
+      box-shadow: var(--shadow);
+      padding: 22px 18px;
+      margin-bottom: 19px;
+      display: flex; flex-direction: column;
     }
+    .panel-title {
+      font-size: 1.28em; margin-bottom: 16px;
+      font-weight: bold; display: flex; align-items:center; gap:8px;
+    }
+    /* Form */
+    .crypto-form label {
+      font-size: 1.04em; margin-bottom: 6px; display:block;
+    }
+    .crypto-form input[type="text"], .crypto-form input[type="number"] {
+      width: 100%; margin-bottom: 11px;
+      padding: 13px;
+      border-radius: 7px;
+      background: var(--bg); color: var(--primary);
+      border: 1.2px solid var(--primary);
+      font-size: 1.09em;
+      transition: border .15s;
+    }
+    .crypto-form input:focus { border-color: #fff; }
+    .form-btn {
+      width: 100%; margin-top: 13px; padding: 17px 0;
+      font-size: 1.2em; border-radius: 8px;
+      background: var(--primary); color: var(--bg);
+      border: none; font-weight: bold; cursor:pointer;
+      box-shadow: var(--shadow);
+      transition: .15s;
+    }
+    .form-btn:active { background: #14fa14;}
+    /* Info Cards */
+    .card-summary {
+      font-size: 1.1em;
+      margin-bottom: 10px;
+      background: #141414;
+      border-radius: 10px;
+      padding: 13px;
+      box-shadow: 0 0 7px var(--primary);
+      color: #fafafa;
+      font-family: inherit;
+    }
+    .card-summary i {font-size:1.05em; margin-right:7px;}
     /* Transactions */
-    .transactions-list { margin-top:18px; }
+    .transaction-list {margin-top: 3px;}
     .transaction-block {
-      background: rgba(0,0,0,0.82); 
-      border: 1px solid #19ff19;
-      border-radius: 5px;
-      display: flex; 
-      justify-content: space-between; align-items: center;
-      padding: 12px 14px;
-      margin-bottom: 11px;
+      background: #191919;
+      border-radius: 7px;
+      box-shadow: 0 0 8px #15fd1597;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 10px; margin-bottom: 7px;
+      font-size: 1.07em;
     }
-    .transaction-title { font-size:1.05em; }
-    .transaction-amount { font-size:1.12em;}
+    .transaction-info {display: flex; flex-direction:column;}
+    .transaction-id {font-weight: bold; margin-bottom: 3px;}
+    .transaction-amount {font-size:1.18em; color:#fff700;}
     .transaction-status {
-      margin-right: 9px; padding: 6px 14px;
-      border-radius: 20px; font-weight: bold;
-      background: #001a00; color: #00ff00;
-      border: 1px solid #00ff00; font-size: 0.97em;
-      display: inline-block; text-align: center;
+      background: #001a00; color: var(--primary);
+      padding: 6px 16px; border-radius: 20px; font-size: .97em;
+      font-weight: bold;
+      border: 1px solid var(--primary);
     }
-    .timestamp { color: #93ff93; font-size: 0.91em;}
+    .transaction-timestamp {color:#b5ffb5; font-size:.97em;}
     /* Paging */
     .transactions-paging {
-      display: flex; gap: 9px; justify-content: center; margin-top: 10px; margin-bottom: 6px;
+      display: flex; gap: 9px; justify-content: center; margin-top: 4px; margin-bottom: 13px;
     }
     .transactions-paging button {
-      width: 55px; padding: 7px 0; font-size: 1.25em;
-      background: #000; color: #00ff00; border: 1.5px solid #00ff00;
-      border-radius: 5px; cursor: pointer;
-      transition: 0.15s all; font-family: inherit;
-      font-weight: bold;
+      width: 59px; padding: 7px 0; font-size: 1.25em;
+      background: var(--bg); color: var(--primary); border: 1.5px solid var(--primary);
+      border-radius: 5px; cursor: pointer; font-family: inherit;
+      font-weight: bold; transition: .15s;
     }
-    .transactions-paging button.btn-confirm,
+    .transactions-paging button.active,
     .transactions-paging button:focus {
-      background: #00ff00; color: #000;
-      box-shadow: 0 0 9px #00ff00;
+      background: var(--primary); color: var(--bg);
+      box-shadow: 0 0 9px var(--primary);
     }
-    /* Confirmation */
-    .confirmation-modal {
-      position: fixed; z-index: 1000;
-      top:0; left:0; width:100%; height:100%;
-      background: rgba(0,0,0,0.915);
-      display: none; justify-content: center; align-items: center;
+    /* Responsive: Mobile Stack */
+    @media (max-width:900px){
+      .dashboard-header, .panel-group { flex-direction:column;}
+      .dashboard-title { font-size: 2em;}
     }
-    .confirmation-card {
-      background: rgba(10,26,10,0.99);
-      border: 1.5px solid #00ff00;
-      border-radius: 10px;
-      padding: 34px 24px;
-      width: 95%; max-width: 410px;
-      box-shadow: 0 0 21px #19ff19;
-      text-align: center;
-    }
-    .qr-section { margin-top: 16px; }
-    .qr-code {
-      width: 129px; height: 129px; cursor: pointer;
-      border-radius: 10px;
-      margin-bottom: 12px; transition: 0.2s scale;
-      border:2px solid #00ff00;
-    }
-    .qr-code:hover { transform: scale(1.04);}
-    .copy-notification {
-      position: fixed; bottom: 26px; right: 25px;
-      background: #16ff16; color: #000;
-      font-size: 1.15em; padding: 13px 30px; border-radius: 7px;
-      box-shadow:0 0 22px #00ff00; z-index:2000; display:none;
-    }
-    /* Waiting & Success */
-    .waiting-screen, .success-message {
-      display: none; text-align: center; 
-      background:rgba(0,0,0,0.93);
-      border:2px solid #14fa14;
-      border-radius: 11px; margin: 22px auto; 
-      max-width: 400px; padding: 30px;
-      box-shadow: 0 0 20px #00ff00;
-      position: relative;
-    }
-    .loading-spinner {
-      border: 4px solid #000;
-      border-top: 4px solid #14fa14;
-      border-radius: 50%;
-      width: 50px; height: 50px;
-      margin: 18px auto;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin { 0%{transform: rotate(0);}100%{transform: rotate(360deg);} }
-    .success-icon {
-      font-size: 3em; color: #00ff00;
-      animation: bounce 1.3s infinite;
-      margin-bottom: 16px;
-    }
-    @keyframes bounce { 0%,100%{transform:translateY(0);}50%{transform:translateY(-13px);} }
-    /* Responsive */
-    @media (max-width: 600px){
-      .container, .confirmation-card, .success-message, .waiting-screen {
-        padding: 10px!important;
-        font-size: 0.97em;
-      }
-      .card-panel{ padding:13px 6px;}
-      .panel-header{ font-size:1.01em;}
-      .transaction-block{ padding:10px 6px;}
-    }
-    .matrix-rain { position: fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:0;}
-    .matrix-char { position: absolute; font-size:1.16em; color:#00ff00; opacity:0.25; animation:matrix-fall linear infinite;}
-    @keyframes matrix-fall {
-      0% { transform: translateY(-100%); opacity:0;}
-      10%,90% { opacity:1;}
-      100%{ transform: translateY(110vh); opacity:0;}
+    @media (max-width:600px){
+      .dashboard-wrapper, .dashboard-header, .card-panel {padding:8px;}
+      .panel-title{font-size:1.05em;}
+      .dashboard-title{font-size:1.3em;}
+      .action-btn {font-size:1em;padding:8px 14px;}
+      .form-btn {font-size:1em;}
     }
   </style>
 </head>
 <body>
-  <div class="matrix-rain" id="matrix-rain"></div>
-  <div class="container">
-    <div class="dashboard-title">
-      <i class="fa fa-bolt"></i> FLASH USDT GENERATOR
-    </div>
-    <div class="card-panel" id="onboard-panel">
-      <div class="panel-header"><i class="fa fa-info-circle"></i> Welcome to Flash USDT Generator!</div>
-      <div style="font-size:1.03em; margin-bottom:7px;">
-        Enter your TRC20 USDT address and amount. Confirm the gas fee and send your deposit to the displayed address. Securely generate a fast transaction as shown in recent transactions below.
+  <div class="dashboard-wrapper">
+    <!-- Header -->
+    <div class="dashboard-header">
+      <div class="dashboard-title">
+        <i class="fa fa-tools"></i> Crypto Tool Dashboard
       </div>
-      <button class="action-btn" onclick="document.getElementById('onboard-panel').style.display='none'">Got it, Start</button>
-    </div>
-    <!-- Form panel -->
-    <div class="card-panel" id="generator-form">
-      <div class="panel-header"><i class="fa fa-credit-card"></i> USDT Generation</div>
-      <form onsubmit="generateUsdt();return false;">
-        <label for="usdt-address"><i class="fa fa-wallet"></i> USDT TRC20 Address:</label>
-        <input type="text" id="usdt-address" autocomplete="off" placeholder="Enter your TRC20 address" required>
-        <div class="error-message" id="address-error">Invalid address format</div>
-        <label for="amount-input"><i class="fa fa-dollar-sign"></i> Amount (USDT):</label>
-        <input type="number" id="amount-input" placeholder="Enter amount (min 1000)" min="1000" max="500000">
-        <div class="error-message" id="amount-error">Please enter an amount between 1,000 and 500,000 USDT</div>
-        <button class="action-btn" type="submit">Generate FLASH USDT</button>
-      </form>
-      <div class="gas-info">
-        <i class="fa fa-gas-pump"></i> Gas Fee: 2% only<br>
-        Total Gas: <span id="total-gas">0</span> TRX<br>
-        <span style="font-weight:bold;"><i class="fa fa-shield-halved"></i> Gas Address:</span> generates 
+      <div class="dashboard-actions">
+        <button class="action-btn active"><i class="fa fa-dashboard"></i> Dashboard</button>
+        <button class="action-btn"><i class="fa fa-user"></i> Profile</button>
+        <button class="action-btn"><i class="fa fa-support"></i> Support</button>
       </div>
     </div>
-    <!-- Recent Transactions -->
-    <div class="card-panel">
-      <div class="panel-header"><i class="fa fa-list"></i> Recent Transactions</div>
-      <div class="transactions-list" id="transactions-list"></div>
-      <div class="transactions-paging" id="transactions-paging"></div>
-    </div>
-    <!-- Confirmation Modal -->
-    <div id="confirmation-modal" class="confirmation-modal">
-      <div class="confirmation-card">
-        <h2 style="font-size:1.4em;">Transaction Confirmation</h2>
-        <div>Entered Amount: <span id="confirm-amount">0</span> USDT</div>
-        <div>Total Gas Fee: <span id="confirm-gas">0</span> TRX</div>
-        <div>
-          <b>Gas Address:</b> TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA
-        </div>
-        <div class="qr-section">
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=129x129&data=TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA"
-             class="qr-code" alt="Deposit QR" title="Click to copy gas address" onclick="copyToClipboard()">
-          <div style="margin-top:7px;">Click QR code to copy address</div>
-        </div>
-        <div style="margin-top:17px;">
-          <button class="action-btn btn-confirm" onclick="confirmTransaction()">CONFIRM TRANSACTION</button>
-          <button class="action-btn" style="background:#111; color:#fff; border-color:#555;" onclick="cancelConfirmation()">CANCEL</button>
+    <!-- Panel Area -->
+    <div class="panel-group">
+      <!-- Crypto Generator Form -->
+      <div class="card-panel">
+        <div class="panel-title"><i class="fa fa-credit-card"></i> Generate USDT</div>
+        <form class="crypto-form" onsubmit="generateUsdt();return false;">
+          <label for="usdt-address"><i class="fa fa-wallet"></i> USDT TRC20 Address</label>
+          <input type="text" id="usdt-address" placeholder="Enter TRC20 address" required>
+          <label for="amount-input"><i class="fa fa-dollar-sign"></i> Amount (USDT)</label>
+          <input type="number" id="amount-input" placeholder="Enter amount (min 1000)" min="1000" max="500000">
+          <button class="form-btn" type="submit"><i class="fa fa-bolt"></i> Generate</button>
+        </form>
+        <div class="card-summary">
+          <i class="fa fa-info-circle"></i>
+          Gas Fee is <b>20 TRX</b> per 1,000 USDT.<br>
+          Gas Address: <span style="font-family:monospace;">TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA</span>
         </div>
       </div>
-    </div>
-    <!-- Waiting Screen -->
-    <div id="waiting-screen" class="waiting-screen">
-      <div class="loading-spinner"></div>
-      <div style="font-size:1.18em; font-weight:500;">Waiting for Deposit...</div>
-      <div style="margin-top:9px;">Please wait while we process your request</div>
-    </div>
-    <!-- Success Message -->
-    <div id="success-message" class="success-message">
-      <div class="success-icon"><i class="fa fa-circle-check"></i></div>
-      <div style="font-size:1.09em;">
-        <b>Transaction Successful!</b><br>
-        <span>Amount: <span id="success-amount">0</span> USDT</span><br>
-        <span>TXID: <span id="success-txid">-</span></span><br>
-        <span>Time: <span id="success-time">-</span></span>
+      <!-- Recent Transactions -->
+      <div class="card-panel">
+        <div class="panel-title"><i class="fa fa-list"></i> Recent Transactions</div>
+        <div class="transaction-list" id="transaction-list"></div>
+        <div class="transactions-paging" id="transactions-paging"></div>
       </div>
-      <button class="action-btn" style="margin-top:18px;" onclick="location.reload()">New Transaction</button>
     </div>
-    <div id="copy-notification" class="copy-notification">Gas address copied to clipboard!</div>
   </div>
   <script>
-    // MATRIX RAIN EFFECT
-    function createMatrixRain(){
-      const matrixContainer = document.getElementById('matrix-rain');
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%"\'#&_(),.;:?!\\|{}<>[]^~';
-      for(let i=0;i<90;i++){
-        const c=document.createElement('div');
-        c.className='matrix-char';
-        c.textContent=chars[Math.floor(Math.random()*chars.length)];
-        c.style.left=`${Math.random()*100}vw`;
-        c.style.animationDuration=`${5+Math.random()*6}s`;
-        c.style.animationDelay=`${Math.random()*7}s`;
-        matrixContainer.appendChild(c);
-      }
-    }createMatrixRain();
-
-    // GAS FEE
-    const gasRate=20;
-    document.getElementById('amount-input').addEventListener('input',updateGasFee);
-    function updateGasFee(){
-      const amt=parseInt(document.getElementById('amount-input').value);
-      document.getElementById('total-gas').textContent=amt?Math.round((amt/1000)*gasRate).toLocaleString():"0";
-    }
-
-    // Validate USDT address (TRC20), min 34 chars, starts T
-    function validateAddress(address){
-      return /^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(address.trim());
-    }
-    function showError(el,show){
-      document.getElementById(el).style.display=show?"block":"none";
-    }
-    // Generator
-    function generateUsdt(){
-      const addressInput=document.getElementById('usdt-address');
-      const amountInput=document.getElementById('amount-input');
-      showError('address-error',false); showError('amount-error',false);
-      let isValid=true;
-      if(!validateAddress(addressInput.value)) {showError('address-error',true); isValid=false;}
-      const amt=parseInt(amountInput.value);
-      if(!amt || amt<1000 || amt>500000){showError('amount-error',true); isValid=false;}
-      if(!isValid)return;
-      const totalGas=Math.round((amt/1000)*gasRate);
-      document.getElementById('confirm-amount').textContent=amt.toLocaleString();
-      document.getElementById('confirm-gas').textContent=totalGas.toLocaleString();
-      document.getElementById('confirmation-modal').style.display='flex';
-      window.selectedAmount=amt;
-    }
-    function confirmTransaction(){
-      document.getElementById('confirmation-modal').style.display='none';
-      document.getElementById('generator-form').style.display='none';
-      document.getElementById('waiting-screen').style.display='block';
-      let countdown=30;
-      const interval=setInterval(function(){
-        countdown--;
-        if(countdown<=0){
-          clearInterval(interval);
-          showSuccessMessage(window.selectedAmount);
-        }
-      },1000);
-    }
-    function showSuccessMessage(amount){
-      document.getElementById('waiting-screen').style.display='none';
-      document.getElementById('success-amount').textContent=amount.toLocaleString();
-      document.getElementById('success-txid').textContent='TX'+Math.random().toString(36).substr(2,16).toUpperCase();
-      document.getElementById('success-time').textContent='Just now';
-      document.getElementById('success-message').style.display='block';
-    }
-    function cancelConfirmation(){
-      document.getElementById('confirmation-modal').style.display='none';
-    }
-    function copyToClipboard(){
-      const gasAddress="TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA";
-      const temp=document.createElement("textarea");
-      temp.value=gasAddress; document.body.appendChild(temp);
-      temp.select(); document.execCommand("copy"); document.body.removeChild(temp);
-      const notif=document.getElementById('copy-notification');
-      notif.style.display='block'; setTimeout(()=>{notif.style.display='none';},2100);
-    }
-
     // PAGINATED TRANSACTIONS
     const TX_PER_PAGE = 5;
     let allTransactions = [];
@@ -375,7 +241,7 @@
       for (let i = 1; i <= txPageCount; i++) {
         const btn = document.createElement('button');
         btn.textContent = i;
-        btn.className = 'action-btn' + (i === currentPage ? ' btn-confirm' : '');
+        btn.className = (i === currentPage ? 'active' : '');
         btn.onclick = function () {
           currentPage = i;
           populateTransactions();
@@ -384,7 +250,7 @@
       }
     }
     function populateTransactions() {
-      const list = document.getElementById('transactions-list');
+      const list = document.getElementById('transaction-list');
       list.innerHTML = '';
       txPageCount = Math.ceil(allTransactions.length / TX_PER_PAGE);
       const start = (currentPage - 1) * TX_PER_PAGE;
@@ -393,21 +259,21 @@
         const t = document.createElement('div');
         t.className = 'transaction-block';
         t.innerHTML = `
-          <div>
-            <div class="transaction-title"><i class="fa fa-file-invoice"></i> ${tx.id}</div>
-            <div class="transaction-amount"><i class="fa fa-dollar-sign"></i> ${tx.amount.toLocaleString()} USDT</div>
+          <div class="transaction-info">
+            <div class="transaction-id">${tx.id}</div>
+            <div class="transaction-amount">${tx.amount.toLocaleString()} USDT</div>
           </div>
           <div>
             <div class="transaction-status">${tx.status.toUpperCase()}</div>
-            <div class="timestamp">${tx.timestamp}</div>
+            <div class="transaction-timestamp">${tx.timestamp}</div>
           </div>
         `;
         list.appendChild(t);
       });
       renderPagingControls();
     }
-    function getRelativeTime(offsetHours){
-      const now=new Date(); now.setHours(now.getHours()-offsetHours);
+    function getRelativeTime(offsetHours) {
+      const now = new Date(); now.setHours(now.getHours()-offsetHours);
       return now.toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
     }
     function refreshTransactionsPeriodically() {
@@ -418,8 +284,28 @@
     document.addEventListener('DOMContentLoaded', function () {
       refreshTransactionsPeriodically();
       setInterval(refreshTransactionsPeriodically, 600000); // 10 min
-      updateGasFee();
     });
+
+    // USDT Form Demo
+    function generateUsdt(){
+      const addressInput = document.getElementById('usdt-address');
+      const amountInput = document.getElementById('amount-input');
+      if (!addressInput.value.trim()) {
+        addressInput.style.borderColor = '#ff5050';
+        addressInput.focus();
+        return;
+      }
+      if (!amountInput.value || parseInt(amountInput.value) < 1000 || parseInt(amountInput.value) > 500000) {
+        amountInput.style.borderColor = '#ff5050';
+        amountInput.focus();
+        return;
+      }
+      alert("USDT Generation Request Sent!\nAddress: " + addressInput.value + "\nAmount: " + amountInput.value + " USDT");
+      addressInput.value = "";
+      amountInput.value = "";
+      addressInput.style.borderColor = "var(--primary)";
+      amountInput.style.borderColor = "var(--primary)";
+    }
   </script>
 </body>
 </html>
