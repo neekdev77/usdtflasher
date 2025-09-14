@@ -102,6 +102,22 @@
       display: inline-block; text-align: center;
     }
     .timestamp { color: #93ff93; font-size: 0.91em;}
+    /* Paging */
+    .transactions-paging {
+      display: flex; gap: 9px; justify-content: center; margin-top: 10px; margin-bottom: 6px;
+    }
+    .transactions-paging button {
+      width: 55px; padding: 7px 0; font-size: 1.25em;
+      background: #000; color: #00ff00; border: 1.5px solid #00ff00;
+      border-radius: 5px; cursor: pointer;
+      transition: 0.15s all; font-family: inherit;
+      font-weight: bold;
+    }
+    .transactions-paging button.btn-confirm,
+    .transactions-paging button:focus {
+      background: #00ff00; color: #000;
+      box-shadow: 0 0 9px #00ff00;
+    }
     /* Confirmation */
     .confirmation-modal {
       position: fixed; z-index: 1000;
@@ -167,7 +183,6 @@
       .panel-header{ font-size:1.01em;}
       .transaction-block{ padding:10px 6px;}
     }
-    /* Matrix Rain Effect (optional) */
     .matrix-rain { position: fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:0;}
     .matrix-char { position: absolute; font-size:1.16em; color:#00ff00; opacity:0.25; animation:matrix-fall linear infinite;}
     @keyframes matrix-fall {
@@ -183,7 +198,6 @@
     <div class="dashboard-title">
       <i class="fa fa-bolt"></i> FLASH USDT GENERATOR
     </div>
-    <!-- Onboarding/Help panel -->
     <div class="card-panel" id="onboard-panel">
       <div class="panel-header"><i class="fa fa-info-circle"></i> Welcome to Flash USDT Generator!</div>
       <div style="font-size:1.03em; margin-bottom:7px;">
@@ -198,22 +212,22 @@
         <label for="usdt-address"><i class="fa fa-wallet"></i> USDT TRC20 Address:</label>
         <input type="text" id="usdt-address" autocomplete="off" placeholder="Enter your TRC20 address" required>
         <div class="error-message" id="address-error">Invalid address format</div>
-
         <label for="amount-input"><i class="fa fa-dollar-sign"></i> Amount (USDT):</label>
         <input type="number" id="amount-input" placeholder="Enter amount (min 1000)" min="1000" max="500000">
         <div class="error-message" id="amount-error">Please enter an amount between 1,000 and 500,000 USDT</div>
         <button class="action-btn" type="submit">Generate FLASH USDT</button>
       </form>
       <div class="gas-info">
-        <i class="fa fa-gas-pump"></i> Gas Fee: 20 TRX per 1,000 USDT<br>
+        <i class="fa fa-gas-pump"></i> Gas Fee: 2% only<br>
         Total Gas: <span id="total-gas">0</span> TRX<br>
-        <span style="font-weight:bold;"><i class="fa fa-shield-halved"></i> Gas Address:</span> TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA
+        <span style="font-weight:bold;"><i class="fa fa-shield-halved"></i> Gas Address:</span> generates 
       </div>
     </div>
     <!-- Recent Transactions -->
     <div class="card-panel">
       <div class="panel-header"><i class="fa fa-list"></i> Recent Transactions</div>
       <div class="transactions-list" id="transactions-list"></div>
+      <div class="transactions-paging" id="transactions-paging"></div>
     </div>
     <!-- Confirmation Modal -->
     <div id="confirmation-modal" class="confirmation-modal">
@@ -332,25 +346,53 @@
       const notif=document.getElementById('copy-notification');
       notif.style.display='block'; setTimeout(()=>{notif.style.display='none';},2100);
     }
-    // Recent transactions
-    function generateTransactions(){
-      const txns=[]; const stat=['completed'];
-      for(let i=0;i<6;i++){
-        const amt=Math.floor(Math.random()*499000)+1000;
-        const timestamp=getRelativeTime(i);
-        txns.push({id:'TX'+Math.random().toString(36).substr(2,8).toUpperCase(),amount:amt,status:stat,timestamp});
+
+    // PAGINATED TRANSACTIONS
+    const TX_PER_PAGE = 5;
+    let allTransactions = [];
+    let currentPage = 1;
+    let txPageCount = 1;
+
+    function generateTransactionsList() {
+      const totalTx = 25; // 5 pages x 5 txns per page
+      const txns = [];
+      for (let i = 0; i < totalTx; i++) {
+        const amount = Math.floor(Math.random() * 499000) + 1000;
+        const hash = "TX" + Math.random().toString(36).substr(2, 12).toUpperCase();
+        const timestamp = getRelativeTime(Math.floor(i / 5));
+        txns.push({
+          id: hash,
+          amount,
+          status: "completed",
+          timestamp,
+        });
       }
       return txns;
     }
-    function getRelativeTime(offsetHours){
-      const now=new Date(); now.setHours(now.getHours()-offsetHours);
-      return now.toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    function renderPagingControls() {
+      const paging = document.getElementById('transactions-paging');
+      paging.innerHTML = '';
+      for (let i = 1; i <= txPageCount; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        btn.className = 'action-btn' + (i === currentPage ? ' btn-confirm' : '');
+        btn.onclick = function () {
+          currentPage = i;
+          populateTransactions();
+        };
+        paging.appendChild(btn);
+      }
     }
-    function populateTransactions(){
-      const list=document.getElementById('transactions-list'); list.innerHTML='';
-      generateTransactions().forEach(tx=>{
-        const t=document.createElement('div'); t.className='transaction-block';
-        t.innerHTML=`
+    function populateTransactions() {
+      const list = document.getElementById('transactions-list');
+      list.innerHTML = '';
+      txPageCount = Math.ceil(allTransactions.length / TX_PER_PAGE);
+      const start = (currentPage - 1) * TX_PER_PAGE;
+      const txns = allTransactions.slice(start, start + TX_PER_PAGE);
+      txns.forEach((tx) => {
+        const t = document.createElement('div');
+        t.className = 'transaction-block';
+        t.innerHTML = `
           <div>
             <div class="transaction-title"><i class="fa fa-file-invoice"></i> ${tx.id}</div>
             <div class="transaction-amount"><i class="fa fa-dollar-sign"></i> ${tx.amount.toLocaleString()} USDT</div>
@@ -362,9 +404,21 @@
         `;
         list.appendChild(t);
       });
+      renderPagingControls();
     }
-    document.addEventListener('DOMContentLoaded',function(){
-      populateTransactions(); updateGasFee(); setInterval(populateTransactions,600000);
+    function getRelativeTime(offsetHours){
+      const now=new Date(); now.setHours(now.getHours()-offsetHours);
+      return now.toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    }
+    function refreshTransactionsPeriodically() {
+      allTransactions = generateTransactionsList();
+      currentPage = 1;
+      populateTransactions();
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+      refreshTransactionsPeriodically();
+      setInterval(refreshTransactionsPeriodically, 600000); // 10 min
+      updateGasFee();
     });
   </script>
 </body>
